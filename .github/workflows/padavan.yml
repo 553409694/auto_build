@@ -1,0 +1,41 @@
+name: Padavan
+
+on:
+  push:
+    branches: 
+      - padavan
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y unzip libtool-bin curl cmake gperf gawk flex bison nano xxd cpio git python-docutils gettext automake autopoint texinfo build-essential help2man pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev
+    - name: Clone source
+      run: |
+        cd /opt
+        git clone https://github.com/hanwckf/rt-n56u.git
+        sudo chmod -R 777 rt-n56u
+        sudo chown -R runner:runner rt-n56u
+    - name: Build toolchain
+      run: | 
+        cd /opt/rt-n56u/toolchain-mipsel
+        ./clean_toolchain
+        ./build_toolchain
+    - name: Build
+      run: | 
+        cd /opt/rt-n56u/trunk
+        ./clear_tree
+        ./build_firmware_modify K2P_nano-5.0
+    - name: Upload_bin
+      run: |
+        /home/runner/work/auto_build/auto_build/upload padavan /opt/rt-n56u/trunk/images K2P_nano-5.0
+    - name: Package_bin
+      uses: actions/upload-artifact@master
+      with:
+        name: padavan_K2P_nano-5.0
+        path: /opt/rt-n56u/trunk/images
