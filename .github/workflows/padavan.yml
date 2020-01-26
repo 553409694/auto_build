@@ -21,6 +21,10 @@ jobs:
         git clone https://github.com/hanwckf/rt-n56u.git
         sudo chmod -R 777 rt-n56u
         sudo chown -R runner:runner rt-n56u
+    - name: Clone config
+      run: |
+        cd /opt/rt-n56u
+        cp /home/runner/work/auto_build/auto_build/kernel-3.4.x-5.0.config trunk/configs/boards/K2P/kernel-3.4.x-5.0.config
     - name: Build toolchain
       run: | 
         cd /opt/rt-n56u/toolchain-mipsel
