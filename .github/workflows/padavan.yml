@@ -25,11 +25,17 @@ jobs:
       run: |
         cd /opt/rt-n56u
         cp /home/runner/work/auto_build/auto_build/kernel-3.4.x-5.0.config trunk/configs/boards/K2P/kernel-3.4.x-5.0.config
-    - name: Build toolchain
+#    - name: Build toolchain
+#      run: | 
+#        cd /opt/rt-n56u/toolchain-mipsel
+#        ./clean_toolchain
+#        ./build_toolchain
+    - name: Download toolchain
       run: | 
         cd /opt/rt-n56u/toolchain-mipsel
-        ./clean_toolchain
-        ./build_toolchain
+        mkdir -p toolchain-3.4.x
+        wget https://github.com/hanwckf/padavan-toolchain/releases/download/v1.0/mipsel-linux-uclibc.tar.xz
+        tar -xvf mipsel-linux-uclibc.tar.xz -C toolchain-3.4.x
     - name: Build
       run: | 
         cd /opt/rt-n56u/trunk
