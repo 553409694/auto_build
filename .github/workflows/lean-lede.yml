@@ -1,0 +1,57 @@
+name: Lede
+
+on:
+  push:
+    branches: 
+      - lean-lede
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libreadline-dev libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint ccache curl wget vim nano python python3 python-pip python3-pip python-ply python3-ply haveged lrzsz device-tree-compiler scons
+    - name: Clone source
+      run: |
+        cd /home/runner
+        git clone https://github.com/coolsnowwolf/lede.git
+        sudo chmod -R 777 lede
+        sudo chown -R runner:runner lede
+        cd /home/runner/lede
+        ./scripts/feeds update -a 
+        ./scripts/feeds install -a
+    - name: Clone config
+      run: |
+        cd /home/runner/lede
+        cp /home/runner/work/auto_build/auto_build/k2p-1.config .config
+    - name: Prebuild
+      run: | 
+        cd /home/runner/lede
+        make defconfig
+        make -j8 download
+    - name: Package_dl
+      uses: actions/upload-artifact@master
+      with:
+        name: dl
+        path: /home/runner/lede/dl
+    - name: Build
+      run: | 
+        cd /home/runner/lede
+        make -j1 V=s
+    - name: Upload_bin
+      run: |
+        /home/runner/work/auto_build/auto_build/upload openwrt /home/runner/lede/bin k2p
+    - name: Package_bin
+      uses: actions/upload-artifact@master
+      with:
+        name: lede_k2p
+        path: /home/runner/lede/bin
+    - name: Package_dl_full
+      uses: actions/upload-artifact@master
+      with:
+        name: dl_full
+        path: /home/runner/lede/dl
