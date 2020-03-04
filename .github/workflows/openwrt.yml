@@ -35,6 +35,7 @@ jobs:
     - name: Build
       run: | 
         cd /home/runner/openwrt
+        make defconfig
         make -j1 V=s
     - name: Upload_bin
       run: |
