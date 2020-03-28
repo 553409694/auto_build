@@ -5,6 +5,11 @@ on:
     branches: 
       - padavan
 
+env:
+#  ROUTER: K2P_nano-5.0
+  ROUTER: WL-WN529N2A
+#  ROUTER: WL-WN529N2A-USB
+
 jobs:
   build:
     runs-on: ubuntu-18.04
@@ -23,10 +28,7 @@ jobs:
         sudo chown -R runner:runner rt-n56u
     - name: Clone config
       run: |
-        cd /opt/rt-n56u
-        cp /home/runner/work/auto_build/auto_build/kernel-3.4.x-5.0.config trunk/configs/boards/K2P/kernel-3.4.x-5.0.config
-        sed -i "s/CONFIG_FIRMWARE_INCLUDE_HTTPS=n/CONFIG_FIRMWARE_INCLUDE_HTTPS=y/g" trunk/configs/templates/K2P_nano-5.0.config
-        sed -i "s/CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE=n/CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE=y/g" trunk/configs/templates/K2P_nano-5.0.config
+        /home/runner/work/auto_build/auto_build/$ROUTER/config.sh
 #    - name: Build toolchain
 #      run: | 
 #        cd /opt/rt-n56u/toolchain-mipsel
@@ -42,12 +44,12 @@ jobs:
       run: | 
         cd /opt/rt-n56u/trunk
         ./clear_tree
-        ./build_firmware_modify K2P_nano-5.0
+        ./build_firmware_modify $ROUTER
     - name: Upload_bin
       run: |
-        /home/runner/work/auto_build/auto_build/upload padavan /opt/rt-n56u/trunk/images K2P_nano-5.0
+        /home/runner/work/auto_build/auto_build/upload padavan /opt/rt-n56u/trunk/images $ROUTER
     - name: Package_bin
       uses: actions/upload-artifact@master
       with:
-        name: padavan_K2P_nano-5.0
+        name: padavan_$ROUTER
         path: /opt/rt-n56u/trunk/images
