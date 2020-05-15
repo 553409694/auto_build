@@ -6,9 +6,9 @@ on:
       - padavan
 
 env:
-#  ROUTER: K2P_nano-5.0
+  ROUTER: K2P_nano-5.0
 #  ROUTER: WL-WN529N2A
-  ROUTER: WL-WN529N2A-USB
+#  ROUTER: WL-WN529N2A-USB
 
 jobs:
   build:
@@ -44,7 +44,7 @@ jobs:
       run: | 
         cd /opt/rt-n56u/trunk
         ./clear_tree
-        ./build_firmware_modify $ROUTER
+        fakeroot ./build_firmware_modify $ROUTER
     - name: Upload_bin
       run: |
         /home/runner/work/auto_build/auto_build/upload padavan /opt/rt-n56u/trunk/images $ROUTER
