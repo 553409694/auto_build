@@ -6,8 +6,8 @@ on:
       - padavan
 
 env:
-  ROUTER: K2P_nano-5.0
-#  ROUTER: WL-WN529N2A
+#  ROUTER: K2P_nano-5.0
+  ROUTER: WL-WN529N2A
 #  ROUTER: WL-WN529N2A-USB
 
 jobs:
