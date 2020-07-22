@@ -30,7 +30,7 @@ jobs:
       run: |
         cd /home/runner/openwrt
         #wget https://raw.githubusercontent.com/553409694/auto_build/openwrt/tp_wr741v5nd-3.config -O .config
-        cp /home/runner/work/auto_build/auto_build/tp_wr741v5nd-2.config .config
+        cp /home/runner/work/auto_build/auto_build/tp_wr741v5nd-1.config .config
         cd /home/runner/openwrt/target/linux/ar71xx/image
         #wget https://raw.githubusercontent.com/553409694/auto_build/openwrt/tiny-tp-link.mk -O tiny-tp-link.mk
         cp /home/runner/work/auto_build/auto_build/tiny-tp-link.mk ./
