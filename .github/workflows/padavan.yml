@@ -6,8 +6,8 @@ on:
       - padavan
 
 env:
-#  ROUTER: K2P_nano-5.0
-  ROUTER: WL-WN529N2A
+  ROUTER: K2P_nano-5.0
+#  ROUTER: WL-WN529N2A
 #  ROUTER: WL-WN529N2A-USB
 
 jobs:
@@ -40,6 +40,7 @@ jobs:
         mkdir -p toolchain-3.4.x
         wget https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz
         tar -xvf mipsel-linux-uclibc.tar.xz -C toolchain-3.4.x
+#        sh dl_toolchain.sh
     - name: Build
       run: | 
         cd /opt/rt-n56u/trunk

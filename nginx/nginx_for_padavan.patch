@@ -1,0 +1,91 @@
+diff -Naur nginx-1.19.3/auto/cc/name nginx-1.19.3/auto/cc/name
+--- nginx-1.19.3/auto/cc/name	2020-09-29 14:32:10.000000000 +0000
++++ nginx-1.19.3/auto/cc/name	2020-10-01 12:16:08.964446119 +0000
+@@ -18,7 +18,7 @@
+         echo
+         echo $0: error: C compiler $CC is not found
+         echo
+-        exit 1
++#        exit 1
+     fi
+ 
+ fi
+diff -Naur nginx-1.19.3/auto/lib/openssl/conf nginx-1.19.3/auto/lib/openssl/conf
+--- nginx-1.19.3/auto/lib/openssl/conf	2020-09-29 14:32:10.000000000 +0000
++++ nginx-1.19.3/auto/lib/openssl/conf	2020-10-01 15:51:23.687662283 +0000
+@@ -118,6 +118,23 @@
+             . auto/feature
+         fi
+ 
++        if [ $ngx_found = no ]; then
++
++            # PadavanPorts
++            ngx_feature="OpenSSL library in /opt/rt-n56u/trunk/stage/"
++            ngx_feature_path="/opt/rt-n56u/trunk/stage/include"
++
++            if [ $NGX_RPATH = YES ]; then
++                ngx_feature_libs="-R/opt/rt-n56u/trunk/stage/lib -L/opt/rt-n56u/trunk/stage/lib -lssl -lcrypto"
++            else
++                ngx_feature_libs="-L/opt/rt-n56u/trunk/stage/lib -lssl -lcrypto"
++            fi
++
++            ngx_feature_libs="$ngx_feature_libs $NGX_LIBDL $NGX_LIBPTHREAD"
++
++            . auto/feature
++        fi
++
+         if [ $ngx_found = yes ]; then
+             have=NGX_SSL . auto/have
+             CORE_INCS="$CORE_INCS $ngx_feature_path"
+diff -Naur nginx-1.19.3/auto/options nginx-1.19.3/auto/options
+--- nginx-1.19.3/auto/options	2020-09-29 14:32:10.000000000 +0000
++++ nginx-1.19.3/auto/options	2020-10-02 01:31:06.964570837 +0000
+@@ -142,7 +142,7 @@
+ USE_PCRE=NO
+ PCRE=NONE
+ PCRE_OPT=
+-PCRE_CONF_OPT=
++PCRE_CONF_OPT="--host=mipsel-linux"
+ PCRE_JIT=NO
+ 
+ USE_OPENSSL=NO
+diff -Naur nginx-1.19.3/auto/types/sizeof nginx-1.19.3/auto/types/sizeof
+--- nginx-1.19.3/auto/types/sizeof	2020-09-29 14:32:10.000000000 +0000
++++ nginx-1.19.3/auto/types/sizeof	2020-10-01 12:18:42.787778053 +0000
+@@ -33,7 +33,8 @@
+ END
+ 
+ 
+-ngx_test="$CC $CC_TEST_FLAGS $CC_AUX_FLAGS \
++#ngx_test="$CC $CC_TEST_FLAGS $CC_AUX_FLAGS \
++ngx_test="gcc $CC_TEST_FLAGS $CC_AUX_FLAGS \
+           -o $NGX_AUTOTEST $NGX_AUTOTEST.c $NGX_LD_OPT $ngx_feature_libs"
+ 
+ eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
+diff -Naur nginx-1.19.3/src/os/unix/ngx_errno.h nginx-1.19.3/src/os/unix/ngx_errno.h
+--- nginx-1.19.3/src/os/unix/ngx_errno.h	2020-09-29 14:32:10.000000000 +0000
++++ nginx-1.19.3/src/os/unix/ngx_errno.h	2020-10-02 01:52:20.497958557 +0000
+@@ -4,6 +4,9 @@
+  * Copyright (C) Nginx, Inc.
+  */
+ 
++#ifndef NGX_SYS_NERR
++#define NGX_SYS_NERR  132
++#endif
+ 
+ #ifndef _NGX_ERRNO_H_INCLUDED_
+ #define _NGX_ERRNO_H_INCLUDED_
+diff -Naur nginx-1.19.3/src/os/unix/ngx_shmem.h nginx-1.19.3/src/os/unix/ngx_shmem.h
+--- nginx-1.19.3/src/os/unix/ngx_shmem.h	2020-09-29 14:32:10.000000000 +0000
++++ nginx-1.19.3/src/os/unix/ngx_shmem.h	2020-10-02 01:52:49.391293131 +0000
+@@ -5,6 +5,10 @@
+  */
+ 
+ 
++#ifndef NGX_HAVE_SYSVSHM
++#define NGX_HAVE_SYSVSHM 1
++#endif
++
+ #ifndef _NGX_SHMEM_H_INCLUDED_
+ #define _NGX_SHMEM_H_INCLUDED_
+ 
