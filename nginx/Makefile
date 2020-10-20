@@ -42,7 +42,7 @@ config_test:
 configure:
 	( cd $(SRC_NAME) ; \
 	./configure \
-		--prefix=$(ROMFSDIR)/usr/nginx \
+		--prefix=/usr/nginx \
 		--with-http_ssl_module \
 		--with-pcre="$(THISDIR)/$(PCRE_NAME)" \
 		--with-zlib="$(THISDIR)/$(ZLIB_NAME)" \
@@ -65,6 +65,7 @@ clean:
 	rm -f config_done
 
 romfs:
-	$(MAKE) -C $(SRC_NAME) install
+	$(MAKE) -C $(SRC_NAME) DESTDIR=$(ROMFSDIR)/usr/nginx install
+#	$(MAKE) -C $(SRC_NAME) install
 #	$(MAKE) -C $(SRC_NAME) CONFIG_PREFIX=$(ROMFSDIR) install
 #	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_NAME)/socat /usr/bin/socat
