@@ -6,9 +6,11 @@ on:
       - padavan
 
 env:
-  ROUTER: K2P_nano-5.0
+  ROUTER: K2P_nano
+#  ROUTER: K2P_nano-5.0
 #  ROUTER: WL-WN529N2A
 #  ROUTER: WL-WN529N2A-USB
+  UPLOAD_COWTRANSFER: true
 
 jobs:
   build:
@@ -37,20 +39,31 @@ jobs:
     - name: Download toolchain
       run: | 
         cd /opt/rt-n56u/toolchain-mipsel
-        mkdir -p toolchain-3.4.x
-        wget https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz
-        tar -xvf mipsel-linux-uclibc.tar.xz -C toolchain-3.4.x
-#        sh dl_toolchain.sh
+#        mkdir -p toolchain-3.4.x
+#        wget https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz
+#        tar -xvf mipsel-linux-uclibc.tar.xz -C toolchain-3.4.x
+        sh dl_toolchain.sh
     - name: Build
+      id: compile
       run: | 
         cd /opt/rt-n56u/trunk
         ./clear_tree
         fakeroot ./build_firmware_modify $ROUTER
-    - name: Upload_bin
+#    - name: Upload_bin
+#      run: |
+#        /home/runner/work/auto_build/auto_build/upload padavan /opt/rt-n56u/trunk/images $ROUTER
+
+    - name: Upload firmware to cowtransfer
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
       run: |
-        /home/runner/work/auto_build/auto_build/upload padavan /opt/rt-n56u/trunk/images $ROUTER
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer cow --block 2621440 -s -p 64 --no-progress /opt/rt-n56u/trunk/images 2>&1 | tee cowtransfer.log
+        echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
+        echo "::set-output name=url::$(cat cowtransfer.log | grep https | cut -f3 -d" ")"
+
     - name: Package_bin
       uses: actions/upload-artifact@master
+      if: steps.compile.outputs.status == 'success' && !cancelled()
       with:
         name: padavan_$ROUTER
         path: /opt/rt-n56u/trunk/images

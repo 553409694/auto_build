@@ -1,0 +1,12 @@
+diff -Naur nginx-1.19.3/auto/options nginx-1.19.3/auto/options
+--- nginx-1.19.3/auto/options	2020-09-29 14:32:10.000000000 +0000
++++ nginx-1.19.3/auto/options	2020-10-02 01:31:06.964570837 +0000
+@@ -142,7 +142,7 @@
+ USE_PCRE=NO
+ PCRE=NONE
+ PCRE_OPT=
+-PCRE_CONF_OPT=
++PCRE_CONF_OPT="--host=mipsel-linux"
+ PCRE_JIT=NO
+ 
+ USE_OPENSSL=NO
