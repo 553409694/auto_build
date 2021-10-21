@@ -39,15 +39,16 @@ jobs:
     - name: Download toolchain
       run: | 
         cd /opt/rt-n56u/toolchain-mipsel
+        sh dl_toolchain.sh
 #        mkdir -p toolchain-3.4.x
 #        wget https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz
 #        tar -xvf mipsel-linux-uclibc.tar.xz -C toolchain-3.4.x
-        sh dl_toolchain.sh
+
     - name: Build
       id: compile
       run: | 
         cd /opt/rt-n56u/trunk
-        ./clear_tree
+        #./clear_tree
         fakeroot ./build_firmware_modify $ROUTER
 #    - name: Upload_bin
 #      run: |
