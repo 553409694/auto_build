@@ -1,7 +1,9 @@
 SRC_NAME = nginx-1.21.3
 SRC_URL = http://nginx.org/download/$(SRC_NAME).tar.gz
-PCRE_NAME = pcre-8.45
-PCRE_URL = ftp://ftp.pcre.org/pub/pcre/$(PCRE_NAME).tar.gz
+PCRE_VERSION = 8.45
+PCRE_NAME = pcre-$(PCRE_VERSION)
+#PCRE_URL = ftp://ftp.pcre.org/pub/pcre/$(PCRE_NAME).tar.gz
+PCRE_URL = https://sourceforge.net/projects/pcre/files/pcre/$(PCRE_VERSION)/$(PCRE_NAME).tar.gz/download
 ZLIB_NAME = zlib-1.2.11
 ZLIB_URL = http://www.zlib.net/$(ZLIB_NAME).tar.gz
 THISDIR = $(shell pwd)
