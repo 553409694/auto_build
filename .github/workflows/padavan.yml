@@ -4,14 +4,19 @@ on:
   push:
     branches: 
       - padavan
+  release:
+    types: [published]
 
 env:
-  ROUTER: K2G
+  ROUTER: "K2G K2P_nano-5.0"
 #  ROUTER: K2P_nano
 #  ROUTER: K2P_nano-5.0
 #  ROUTER: WL-WN529N2A
 #  ROUTER: WL-WN529N2A-USB
   UPLOAD_COWTRANSFER: false
+#  UPLOAD_RELEASE: true
+  images_dir: /opt/images
+  TZ: Asia/Shanghai
 
 jobs:
   build:
@@ -29,9 +34,6 @@ jobs:
         git clone https://github.com/hanwckf/rt-n56u.git
         sudo chmod -R 777 rt-n56u
         sudo chown -R runner:runner rt-n56u
-    - name: Clone config
-      run: |
-        /home/runner/work/auto_build/auto_build/$ROUTER/config.sh
 #    - name: Build toolchain
 #      run: | 
 #        cd /opt/rt-n56u/toolchain-mipsel
@@ -45,12 +47,19 @@ jobs:
 #        wget https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz
 #        tar -xvf mipsel-linux-uclibc.tar.xz -C toolchain-3.4.x
 
+#    - name: Clone config
+#      run: |
+#        /home/runner/work/auto_build/auto_build/$ROUTER/config.sh
+
     - name: Build
       id: compile
       run: | 
         cd /opt/rt-n56u/trunk
-        #./clear_tree
-        fakeroot ./build_firmware_modify $ROUTER
+        mkdir -p ${images_dir}
+        for m in $ROUTER; do /home/runner/work/auto_build/auto_build/$m/config.sh; \
+        fakeroot ./build_firmware_ci $m; \
+        if [ $? = 0 ]; then cp -f images/*.trx ${images_dir}/; else exit 1; fi; \
+        ./clear_tree_simple >/dev/null 2>&1; done
         echo "::set-output name=status::success"
 #    - name: Upload_bin
 #      run: |
@@ -66,7 +75,35 @@ jobs:
 
     - name: Package_bin
       uses: actions/upload-artifact@master
-      if: steps.compile.outputs.status == 'success' && !cancelled()
+      if: ${{ github.event_name != 'release' && success() }}
       with:
-        name: padavan_$ROUTER
-        path: /opt/rt-n56u/trunk/images
+        name: padavan_${{ env.ROUTER }}
+        path: ${{ env.images_dir }}
+
+    - name: Generate release tag
+      id: tag
+      if: ${{ github.event_name == 'release' && success() }}
+      run: |
+        echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
+        touch release.txt
+        [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
+        echo "::set-output name=status::success"
+
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      if: ${{ github.event_name == 'release' && success() }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        body_path: release.txt
+        files: ${{ env.images_dir }}/*.trx
+
+    - name: Remove old Releases
+      uses: dev-drprasad/delete-older-releases@v0.1.0
+      if: ${{ github.event_name == 'release' && success() }}
+      with:
+        keep_latest: 3
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
