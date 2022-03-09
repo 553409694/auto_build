@@ -8,13 +8,13 @@ on:
     types: [published]
 
 env:
-  ROUTER: "K2G K2P_nano-5.0"
+  ROUTER: "K2G K2P_nano"
 #  ROUTER: K2P_nano
 #  ROUTER: K2P_nano-5.0
 #  ROUTER: WL-WN529N2A
 #  ROUTER: WL-WN529N2A-USB
   UPLOAD_COWTRANSFER: false
-#  UPLOAD_RELEASE: true
+  UPLOAD_RELEASE: true
   images_dir: /opt/images
   TZ: Asia/Shanghai
 
@@ -75,14 +75,14 @@ jobs:
 
     - name: Package_bin
       uses: actions/upload-artifact@master
-      if: ${{ github.event_name != 'release' && success() }}
+      if: ${{ github.event_name != 'release' && env.UPLOAD_RELEASE != 'true' && success() }}
       with:
         name: padavan_${{ env.ROUTER }}
         path: ${{ env.images_dir }}
 
     - name: Generate release tag
       id: tag
-      if: ${{ github.event_name == 'release' && success() }}
+      if: ${{ github.event_name == 'release' || env.UPLOAD_RELEASE == 'true' && success() }}
       run: |
         echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
         touch release.txt
@@ -91,17 +91,18 @@ jobs:
 
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
-      if: ${{ github.event_name == 'release' && success() }}
+      if: ${{ github.event_name == 'release' || env.UPLOAD_RELEASE == 'true' && success() }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
+#        tag: ${{ github.ref }}
         body_path: release.txt
         files: ${{ env.images_dir }}/*.trx
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0
-      if: ${{ github.event_name == 'release' && success() }}
+      if: ${{ github.event_name == 'release' || env.UPLOAD_RELEASE == 'true' && success() }}
       with:
         keep_latest: 3
         delete_tags: true
