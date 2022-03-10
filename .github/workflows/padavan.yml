@@ -80,18 +80,18 @@ jobs:
         name: padavan_${{ env.ROUTER }}
         path: ${{ env.images_dir }}
 
-    - name: Generate release tag
+    - name: Generate release tag of date
       id: tag
-      if: ${{ github.event_name == 'release' || env.UPLOAD_RELEASE == 'true' && success() }}
+      if: ${{ env.UPLOAD_RELEASE == 'true' && github.event_name != 'release' && success() }}
       run: |
         echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
         touch release.txt
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
         echo "::set-output name=status::success"
 
-    - name: Upload firmware to release
+    - name: Upload firmware to release With the tag of date
       uses: softprops/action-gh-release@v1
-      if: ${{ github.event_name == 'release' || env.UPLOAD_RELEASE == 'true' && success() }}
+      if: ${{ env.UPLOAD_RELEASE == 'true' && github.event_name != 'release' && success() }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -99,6 +99,16 @@ jobs:
 #        tag: ${{ github.ref }}
         body_path: release.txt
         files: ${{ env.images_dir }}/*.trx
+
+    - name: Upload images to Releases With published tag
+      if: ${{ github.event_name == 'release' && success() }}
+      uses: svenstaro/upload-release-action@2.2.0
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{ env.images_dir }}/*.trx
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0
