@@ -56,6 +56,7 @@ configure:
                 --with-stream \
                 --with-stream_ssl_module \
                 --with-stream_ssl_preread_module \
+                --add-module="$(THISDIR)/ngx_http_proxy_connect_module" \
 	)
 
 clean:
