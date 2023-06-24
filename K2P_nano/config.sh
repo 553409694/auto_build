@@ -30,3 +30,7 @@ echo "CONFIG_FIRMWARE_INCLUDE_NGINX=y" >> trunk/configs/templates/K2P_nano.confi
 
 ##ADD SMARTDNS
 echo "CONFIG_FIRMWARE_INCLUDE_SMARTDNS=y" >> trunk/configs/templates/K2P_nano.config
+
+##DISABLE DELETING THE ASP FOR VPN
+sed -i "/vpn/d" trunk/user/www/Makefile
+

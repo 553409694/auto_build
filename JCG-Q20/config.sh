@@ -30,3 +30,7 @@ echo "CONFIG_FIRMWARE_INCLUDE_NGINX=y" >> trunk/configs/templates/JCG-Q20.config
 
 ##ADD SMARTDNS
 #echo "CONFIG_FIRMWARE_INCLUDE_SMARTDNS=y" >> trunk/configs/templates/JCG-Q20.config
+
+##DISABLE DELETING THE ASP FOR VPN
+sed -i "/vpn/d" trunk/user/www/Makefile
+
