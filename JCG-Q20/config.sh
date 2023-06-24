@@ -34,3 +34,6 @@ echo "CONFIG_FIRMWARE_INCLUDE_NGINX=y" >> trunk/configs/templates/JCG-Q20.config
 ##DISABLE DELETING THE ASP FOR VPN
 sed -i "/vpn/d" trunk/user/www/Makefile
 
+##UPDATE SMARTDNS TO RELEASE42
+cp /home/runner/work/auto_build/auto_build/smartdns-Release42.tar.gz trunk/user/smartdns/
+sed -i "s/smartdns-ba282c8/smartdns-Release42/g" trunk/user/smartdns/Makefile
