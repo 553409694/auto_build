@@ -8,7 +8,7 @@ on:
     types: [published]
 
 env:
-  ROUTER: "JCG-Q20 K2P_nano"
+  ROUTER: "JCG-Q20 K2P_nano JDCLOUD-RE-CP-02"
 #  ROUTER: K2P_nano
 #  ROUTER: K2P_nano-5.0
 #  ROUTER: WL-WN529N2A
@@ -16,6 +16,7 @@ env:
   UPLOAD_COWTRANSFER: false
   UPLOAD_RELEASE: true
   images_dir: /opt/images
+  smartdns_version: smartdns-Release43
   TZ: Asia/Shanghai
 
 jobs:
