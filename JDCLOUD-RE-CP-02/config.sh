@@ -8,7 +8,7 @@ sed -i "/echo \"CONFIG_FIRMWARE/d" trunk/build_firmware_modify
 sed -i "/echo 'CONFIG_FIRMWARE/d" trunk/build_firmware_modify
 
 ##COPY CONFIG_FILE
-cp /home/runner/work/auto_build/auto_build/JDCLOUD-RE-CP-02/jdcloud-re-cp-02.dts trunk/linux-4.4.x/arch/mips/boot/dts/ralink/
+#cp /home/runner/work/auto_build/auto_build/JDCLOUD-RE-CP-02/jdcloud-re-cp-02.dts trunk/linux-4.4.x/arch/mips/boot/dts/ralink/
 
 ##ENABLE HTTPS
 sed -i "s/CONFIG_FIRMWARE_INCLUDE_HTTPS=n/CONFIG_FIRMWARE_INCLUDE_HTTPS=y/g" trunk/configs/templates/JDCLOUD-RE-CP-02.config
