@@ -18,9 +18,10 @@ sed -i "s/CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE=n/CONFIG_FIRMWARE_INCLUDE_OPENSSL_
 ##ENABLE OPENVPN
 sed -i "s/CONFIG_FIRMWARE_INCLUDE_OPENVPN=n/CONFIG_FIRMWARE_INCLUDE_OPENVPN=y/g" trunk/configs/templates/K2P_nano.config
 
-##DISABLE SAMBA SOCAT
+##DISABLE SAMBA SOCAT WIREGUARD
 #sed -i "s/CONFIG_FIRMWARE_INCLUDE_SMBD36=y/CONFIG_FIRMWARE_INCLUDE_SMBD36=n/g" trunk/configs/templates/K2P_nano.config
 #sed -i "s/CONFIG_FIRMWARE_INCLUDE_SOCAT=y/CONFIG_FIRMWARE_INCLUDE_SOCAT=n/g" trunk/configs/templates/K2P_nano.config
+#sed -i "s/CONFIG_FIRMWARE_INCLUDE_WIREGUARD=y/CONFIG_FIRMWARE_INCLUDE_WIREGUARD=n/g" trunk/configs/templates/K2P_nano.config
 
 ##ADD NGINX
 cp -r /home/runner/work/auto_build/auto_build/nginx trunk/user/

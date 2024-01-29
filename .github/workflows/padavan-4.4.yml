@@ -8,7 +8,7 @@ on:
     types: [published]
 
 env:
-  ROUTER: "JCG-Q20 K2P_nano JDCLOUD-RE-CP-02"
+  ROUTER: "JCG-Q20 K2P_nano JDCLOUD-RE-CP-02 JDCLOUD-RE-SP-01B"
 #  ROUTER: K2P_nano
 #  ROUTER: K2P_nano-5.0
 #  ROUTER: WL-WN529N2A
